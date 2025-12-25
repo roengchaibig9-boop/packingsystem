@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Packing System (Secure RBAC & Mobile)</title>
+    <title>Packing System (Full RBAC & Working Save)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Work+Sans:wght@300;400;500;600;700&display=swap');
         
@@ -54,7 +54,6 @@
             border: none; font-size: 1.2rem; border-radius: 8px; cursor: pointer; 
             font-weight: bold; transition: 0.2s; font-family: 'Work Sans', sans-serif;
         }
-        .login-btn:hover { background: var(--highlight); }
         
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
@@ -66,18 +65,8 @@
             padding: 2rem;
             margin-bottom: 2rem;
             border-radius: 12px;
-            box-shadow: 0 8px 32px var(--shadow);
             display: flex; justify-content: space-between; align-items: center;
         }
-        
-        header h1 { font-family: 'Space Mono', monospace; font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; }
-
-        .logout-btn {
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-            color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;
-            font-size: 0.9rem; transition: 0.3s;
-        }
-        .logout-btn:hover { background: var(--danger); border-color: var(--danger); }
         
         .tab-navigation {
             display: flex; gap: 1rem; margin-bottom: 2rem;
@@ -90,13 +79,11 @@
             padding: 0.875rem 2rem; border: none; background: var(--light);
             color: var(--text); font-family: 'Work Sans', sans-serif;
             font-size: 1rem; font-weight: 600; cursor: pointer;
-            border-radius: 8px; transition: all 0.3s ease;
+            border-radius: 8px; transition: 0.3s;
         }
-
         .tab-btn.role-hidden { display: none !important; }
-        
-        .tab-btn:hover { background: var(--accent); color: white; transform: translateY(-2px); }
-        .tab-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(15, 76, 117, 0.3); }
+        .tab-btn:hover { background: var(--accent); color: white; }
+        .tab-btn.active { background: var(--accent); color: white; }
         
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
@@ -104,73 +91,47 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 16px var(--shadow); margin-bottom: 2rem; }
-        
         .card-title {
             font-family: 'Space Mono', monospace; font-size: 1.5rem;
             font-weight: 700; color: var(--primary); margin-bottom: 1.5rem;
-            padding-bottom: 1rem; border-bottom: 3px solid var(--accent);
-            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 3px solid var(--accent); padding-bottom: 0.5rem;
         }
         
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
         .form-group { display: flex; flex-direction: column; margin-bottom: 1rem; }
-        .form-group label { font-weight: 600; margin-bottom: 0.5rem; color: var(--text); font-size: 0.9rem; }
-        .form-group input, .form-group select, .form-group textarea {
-            padding: 0.875rem; border: 2px solid var(--border); border-radius: 8px;
-            font-family: 'Work Sans', sans-serif; font-size: 1rem; transition: all 0.3s ease;
-        }
+        .form-group label { font-weight: 600; margin-bottom: 0.3rem; font-size: 0.85rem; }
+        .form-group input { padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; }
 
-        .product-table, .queue-table, .record-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
-        .product-table th, .queue-table th, .record-table th {
-            background: var(--secondary); color: white; padding: 1rem;
-            text-align: left; font-weight: 600; font-size: 0.9rem;
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .product-table td, .queue-table td, .record-table td { padding: 0.875rem; border-bottom: 1px solid var(--border); }
-        
-        .btn {
-            padding: 1rem 2rem; border: none; border-radius: 8px;
-            font-family: 'Work Sans', sans-serif; font-size: 1rem; font-weight: 600;
-            cursor: pointer; transition: all 0.3s ease; display: inline-flex;
-            align-items: center; justify-content: center; gap: 0.5rem;
-        }
+        .record-table { width: 100%; border-collapse: collapse; }
+        .record-table th { background: var(--secondary); color: white; padding: 0.75rem; text-align: left; font-size: 0.8rem; }
+        .record-table td { padding: 0.75rem; border-bottom: 1px solid var(--border); }
+
+        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
         .btn-primary { background: var(--accent); color: white; }
-        .btn-success { background: var(--success); color: white; }
         .btn-warning { background: var(--warning); color: white; }
+        .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
-        .btn-secondary { background: var(--light); color: var(--text); border: 2px solid var(--border); }
-        
-        .status-badge { padding: 0.375rem 0.875rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
-        .status-packed { background: #d4edda; color: #155724; }
-        .status-updated { background: #fff3cd; color: #856404; }
-        .status-locked { background: #f8d7da; color: #721c24; }
+        .btn-secondary { background: #ddd; color: #333; }
 
-        .queue-badge { background: var(--danger); color: white; padding: 0.2rem 0.6rem; border-radius: 50%; font-size: 0.8rem; margin-left: 0.5rem; display: none; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; padding: 2rem; border-radius: 12px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; }
 
-        /* Mobile Adaptations */
-        @media screen and (max-width: 768px) {
-            header { flex-direction: column; text-align: center; gap: 1rem; }
-            .tab-btn { flex: 1 1 45%; padding: 0.75rem; font-size: 0.85rem; }
-            
-            .product-table thead, .queue-table thead, .record-table thead { display: none; }
-            .product-table tr, .queue-table tr, .record-table tr { 
-                display: block; border: 1px solid var(--border); border-radius: 12px; 
-                margin-bottom: 1rem; padding: 1rem; background: #fff;
-            }
-            .product-table td, .queue-table td, .record-table td { 
-                display: flex; justify-content: space-between; border: none; 
-                padding: 0.5rem 0; text-align: right; width: 100% !important;
-            }
-            .product-table td::before, .queue-table td::before, .record-table td::before { 
-                content: attr(data-label); font-weight: 700; color: var(--text-light); font-size: 0.75rem; 
-            }
-            .btn-group { flex-direction: column; }
-            .btn { width: 100%; }
-        }
-
-        .modal-content { max-height: 90vh; overflow-y: auto; }
-        .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: none; }
+        .alert { position: fixed; top: 20px; right: 20px; padding: 1rem 2rem; border-radius: 8px; color: white; z-index: 10000; display: none; animation: slideUp 0.3s; }
         .alert.active { display: block; }
+        .alert-success { background: var(--success); }
+        .alert-error { background: var(--danger); }
+
+        .queue-badge { background: var(--danger); color: white; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.7rem; margin-left: 5px; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .record-table thead { display: none; }
+            .record-table tr { display: block; margin-bottom: 1rem; border: 1px solid var(--border); padding: 0.5rem; border-radius: 8px; }
+            .record-table td { display: flex; justify-content: space-between; border: none; padding: 0.3rem; }
+            .record-table td::before { content: attr(data-label); font-weight: 700; color: var(--text-light); }
+            .tab-btn { flex: 1 1 45%; padding: 0.5rem; font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
@@ -180,9 +141,8 @@
             <h2 class="login-title">🔐 WMS LOGIN</h2>
             <input type="password" id="accessCode" class="login-input" placeholder="****" maxlength="4" onkeypress="if(event.key==='Enter') login()">
             <button class="login-btn" onclick="login()">ACCESS SYSTEM</button>
-            <div class="login-hint">
-                <p><strong>Packing:</strong> 3333 | <strong>Store:</strong> 1111</p>
-                <p><strong>QC:</strong> 2222 | <strong>Manager:</strong> 9999</p>
+            <div style="font-size: 0.8rem; color: #888; margin-top: 1rem;">
+                Pack: 3333 | Store: 1111 | QC: 2222 | Mgr: 9999
             </div>
         </div>
     </div>
@@ -190,72 +150,97 @@
     <div class="container" id="mainApp">
         <header>
             <div>
-                <h1>📦 Packing & Label System</h1>
-                <p id="userRoleDisplay">Retail & B2B Delivery Management</p>
+                <h1 style="font-size: 1.5rem;">📦 Packing & Label System</h1>
+                <p id="userRoleDisplay" style="font-size: 0.8rem; opacity: 0.8;"></p>
             </div>
-            <button class="logout-btn" onclick="location.reload()">🔒 Logout</button>
+            <button class="btn btn-danger" onclick="location.reload()" style="padding: 0.5rem 1rem;">Logout</button>
         </header>
 
-        <div class="tab-navigation">
+        <nav class="tab-navigation">
             <button class="tab-btn active" onclick="switchTab('packing')">📝 Packing Entry</button>
             <button class="tab-btn" onclick="switchTab('records')">📋 Record & History</button>
-            <button class="tab-btn" onclick="switchTab('labels')">🏷️ Generated Labels <span id="queue-badge-tab" class="queue-badge">0</span></button>
-            <button class="tab-btn" onclick="switchTab('withdrawal')">📤 Orders for Withdrawal <span id="withdrawal-badge" class="queue-badge">0</span></button>
-            <button class="tab-btn" onclick="switchTab('qc-inspection')">🔍 QC Inspection <span id="qc-badge" class="queue-badge">0</span></button>
-            <button class="tab-btn" onclick="switchTab('stock-rework')">🔧 Stock Rework <span id="rework-badge" class="queue-badge">0</span></button>
-            <button class="tab-btn" onclick="switchTab('ready-ship')">🚚 Ready to Ship <span id="ship-badge" class="queue-badge">0</span></button>
-            <button class="tab-btn" onclick="switchTab('packing-list')">📄 Packing List PDF</button>
-        </div>
+            <button class="tab-btn" onclick="switchTab('labels')">🏷️ Labels <span id="label-count" class="queue-badge">0</span></button>
+            <button class="tab-btn" onclick="switchTab('withdrawal')">📤 Withdrawal <span id="withdrawal-count" class="queue-badge">0</span></button>
+            <button class="tab-btn" onclick="switchTab('qc-inspection')">🔍 QC Inspection</button>
+            <button class="tab-btn" onclick="switchTab('stock-rework')">🔧 Stock Rework</button>
+            <button class="tab-btn" onclick="switchTab('ready-ship')">🚚 Ready to Ship</button>
+            <button class="tab-btn" onclick="switchTab('packing-list')">📄 PDF List</button>
+        </nav>
 
         <div id="packing-tab" class="tab-content active">
             <div class="card">
                 <h2 class="card-title">Order Entry</h2>
                 <div class="form-grid">
                     <div class="form-group"><label>Order #</label><input type="text" id="orderNumber" placeholder="ORD-001"></div>
-                    <div class="form-group"><label>Customer</label><input type="text" id="customerName" placeholder="Client Name"></div>
-                    <div class="form-group"><label>Location</label><input type="text" id="deliveryLocation" placeholder="Warehouse A"></div>
+                    <div class="form-group"><label>Customer</label><input type="text" id="customerName" placeholder="Customer Name"></div>
                     <div class="form-group"><label>Date</label><input type="date" id="packingDate"></div>
                 </div>
-                <table class="product-table">
-                    <tbody id="productTableBody"></tbody>
-                </table>
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="addProductRow()">➕ Add Product</button>
-                    <button class="btn btn-warning" onclick="addToQueue()">⬇️ Add to Queue</button>
+                <div style="margin-top: 1rem;">
+                    <button class="btn btn-secondary" onclick="addProductRow()" style="margin-bottom: 1rem;">➕ Add Product Row</button>
+                    <div style="overflow-x: auto;">
+                        <table class="record-table">
+                            <thead><tr><th>Name</th><th>Qty/Box</th><th>Total</th><th>Boxes</th><th>Action</th></tr></thead>
+                            <tbody id="productTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="btn-group" style="margin-top: 2rem; display: flex; gap: 1rem;">
+                    <button class="btn btn-warning" onclick="addToQueue()" style="flex: 1;">⬇️ Add to Queue</button>
                 </div>
             </div>
             <div class="card">
                 <h2 class="card-title">📋 Queue</h2>
-                <table class="queue-table">
+                <table class="record-table">
                     <tbody id="queueTableBody"></tbody>
                 </table>
-                <button class="btn btn-primary" id="genBtn" style="display:none; width:100%" onclick="generateAllLabels()">🏷️ Generate All Labels</button>
+                <button class="btn btn-primary" id="genBtn" style="display:none; width: 100%; margin-top: 1rem;" onclick="generateAllLabels()">🏷️ Generate All Labels</button>
+            </div>
+        </div>
+
+        <div id="withdrawal-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Orders Ready for Withdrawal</h2>
+                <table class="record-table">
+                    <thead><tr><th>Order #</th><th>Customer</th><th>Items</th><th>Action</th></tr></thead>
+                    <tbody id="withdrawalListBody"></tbody>
+                </table>
             </div>
         </div>
 
         <div id="records-tab" class="tab-content">
             <div class="card">
-                <h2 class="card-title">Records & History</h2>
-                <input type="text" id="mainSearch" placeholder="🔍 Search..." onkeyup="renderOrderList()" style="width:100%; padding:1rem; border-radius:8px; border:1px solid #ddd; margin-bottom:1rem;">
+                <h2 class="card-title">Record History</h2>
+                <input type="text" id="mainSearch" placeholder="🔍 Search Order..." onkeyup="renderOrderList()" style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 8px; border: 1px solid #ddd;">
                 <table class="record-table">
+                    <thead><tr><th>Order #</th><th>Customer</th><th>Status</th></tr></thead>
                     <tbody id="orderListBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <div id="labels-tab" class="tab-content"><div class="card"><h2>Labels Preview</h2><div id="label-preview-container"></div></div></div>
-        <div id="withdrawal-tab" class="tab-content"><div class="card"><h2>Withdrawal Queue</h2><table class="record-table"><tbody id="withdrawalListBody"></tbody></table></div></div>
-        <div id="qc-inspection-tab" class="tab-content"><div class="card"><h2>QC Queue</h2><table class="record-table"><tbody id="qcListBody"></tbody></table></div></div>
-        <div id="stock-rework-tab" class="tab-content"><div class="card"><h2>Rework Needed</h2><table class="record-table"><tbody id="reworkListBody"></tbody></table></div></div>
-        <div id="ready-ship-tab" class="tab-content"><div class="card"><h2>Ready to Ship</h2><table class="record-table"><tbody id="shipListBody"></tbody></table></div></div>
-        <div id="packing-list-tab" class="tab-content"><div class="card"><h2>PDF Generator</h2><select id="packingListOrderNumber" style="width:100%; padding:1rem; margin-bottom:1rem;"></select><button class="btn btn-primary" onclick="alert('PDF Generated')">📄 Generate PDF</button></div></div>
-        
-        <div id="alert-container"></div>
+        <div id="labels-tab" class="tab-content"><div class="card"><h2>Labels</h2><div id="label-container"></div></div></div>
+        <div id="qc-inspection-tab" class="tab-content"><div class="card"><h2>QC Inspection</h2><table class="record-table"><tbody id="qcListBody"></tbody></table></div></div>
+        <div id="stock-rework-tab" class="tab-content"><div class="card"><h2>Stock Rework</h2><p>Items needing attention will appear here.</p></div></div>
+        <div id="ready-ship-tab" class="tab-content"><div class="card"><h2>Ready to Ship</h2><p>QC Passed items ready for delivery.</p></div></div>
+        <div id="packing-list-tab" class="tab-content"><div class="card"><h2>Packing List</h2><p>PDF Generator interface.</p></div></div>
+
     </div>
 
-    <div id="stockEditModal" class="modal"><div class="modal-content"><h3 class="modal-header">📦 Stock Adjust</h3><div id="stockEditItems"></div><div class="btn-group"><button class="btn btn-success" onclick="submitStockAdjustment()">✅ Save</button><button class="btn btn-secondary" onclick="document.getElementById('stockEditModal').classList.remove('active')">Cancel</button></div></div></div>
+    <div id="stockEditModal" class="modal">
+        <div class="modal-content">
+            <h3 class="card-title">📦 Stock Adjustment</h3>
+            <div id="stockEditItems"></div>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button class="btn btn-success" onclick="submitStockAdjustment()" style="flex: 1;">💾 Save & Send to QC</button>
+                <button class="btn btn-secondary" onclick="closeModal('stockEditModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alert-box" class="alert"></div>
 
     <script>
+        // 1. Data Initialization
         let boxRecords = JSON.parse(localStorage.getItem('boxRecords')) || [];
         let packingQueue = JSON.parse(localStorage.getItem('packingQueue')) || [];
         let currentUserRole = '';
@@ -269,6 +254,7 @@
             'supervisor': ['packing', 'records', 'labels', 'withdrawal', 'qc-inspection', 'stock-rework', 'ready-ship', 'packing-list']
         };
 
+        // 2. Auth & Role Logic
         function login() {
             const code = document.getElementById('accessCode').value;
             if (USERS[code]) {
@@ -276,8 +262,10 @@
                 document.getElementById('login-overlay').style.display = 'none';
                 document.getElementById('mainApp').style.display = 'block';
                 setUserRole(currentUserRole);
-                document.getElementById('userRoleDisplay').innerText = `Role: ${currentUserRole.toUpperCase()}`;
-            } else { alert("Access Denied"); }
+                document.getElementById('userRoleDisplay').innerText = `User: ${currentUserRole.toUpperCase()}`;
+            } else {
+                showAlert("Access Denied", "error");
+            }
         }
 
         function setUserRole(role) {
@@ -296,7 +284,7 @@
             });
 
             if (firstTab) switchTab(firstTab);
-            renderRecords();
+            updateBadgeCounts();
         }
 
         function switchTab(name) {
@@ -304,33 +292,32 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(name + '-tab').classList.add('active');
             
-            // Find and activate the correct button
             document.querySelectorAll('.tab-btn').forEach(b => {
                 if(b.getAttribute('onclick').includes(name)) b.classList.add('active');
             });
 
             if (name === 'records') renderOrderList();
             if (name === 'withdrawal') renderWithdrawalList();
-            if (name === 'packing-list') populateOrderDropdown();
         }
 
+        // 3. Packing Entry Logic
         function addProductRow() {
             const tbody = document.getElementById('productTableBody');
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td data-label="Name"><input type="text" class="p-name" placeholder="Item"></td>
-                <td data-label="Qty/Box"><input type="number" class="p-qpb" value="10" oninput="updateBoxCalc(this)"></td>
-                <td data-label="Total"><input type="number" class="p-total" value="100" oninput="updateBoxCalc(this)"></td>
-                <td data-label="Boxes" class="p-boxcount">10</td>
-                <td data-label="Action"><button class="btn-danger" onclick="this.parentElement.parentElement.remove()">✕</button></td>
+                <td data-label="Name"><input type="text" class="p-name" placeholder="Item Name" style="width:100%"></td>
+                <td data-label="Qty/Box"><input type="number" class="p-qpb" value="10" oninput="updateRowCalc(this)" style="width:100%"></td>
+                <td data-label="Total Qty"><input type="number" class="p-total" value="100" oninput="updateRowCalc(this)" style="width:100%"></td>
+                <td data-label="Boxes" class="p-boxcount" style="font-weight:bold">10</td>
+                <td><button class="btn btn-danger" style="padding:0.3rem" onclick="this.parentElement.parentElement.remove()">✕</button></td>
             `;
             tbody.appendChild(row);
         }
 
-        function updateBoxCalc(el) {
+        function updateRowCalc(el) {
             const tr = el.parentElement.parentElement;
-            const qpb = tr.querySelector('.p-qpb').value || 1;
-            const total = tr.querySelector('.p-total').value || 0;
+            const qpb = parseFloat(tr.querySelector('.p-qpb').value) || 1;
+            const total = parseFloat(tr.querySelector('.p-total').value) || 0;
             tr.querySelector('.p-boxcount').innerText = Math.ceil(total / qpb);
         }
 
@@ -338,17 +325,27 @@
             const order = {
                 orderNumber: document.getElementById('orderNumber').value,
                 customer: document.getElementById('customerName').value,
+                date: document.getElementById('packingDate').value,
                 products: []
             };
+            if(!order.orderNumber) return showAlert("Enter Order #", "error");
+
             document.querySelectorAll('#productTableBody tr').forEach(tr => {
-                order.products.push({
-                    name: tr.querySelector('.p-name').value,
-                    boxes: parseInt(tr.querySelector('.p-boxcount').innerText)
-                });
+                const name = tr.querySelector('.p-name').value;
+                if(name) {
+                    order.products.push({
+                        name: name,
+                        qpb: parseInt(tr.querySelector('.p-qpb').value),
+                        total: parseInt(tr.querySelector('.p-total').value),
+                        boxes: parseInt(tr.querySelector('.p-boxcount').innerText)
+                    });
+                }
             });
+
             packingQueue.push(order);
             localStorage.setItem('packingQueue', JSON.stringify(packingQueue));
             renderQueue();
+            showAlert("Added to queue", "success");
         }
 
         function renderQueue() {
@@ -356,7 +353,7 @@
             tbody.innerHTML = '';
             packingQueue.forEach((q, i) => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td data-label="Order">${q.orderNumber}</td><td data-label="Customer">${q.customer}</td><td><button class="btn-danger" onclick="packingQueue.splice(${i},1);renderQueue()">✕</button></td>`;
+                tr.innerHTML = `<td data-label="Order">${q.orderNumber}</td><td data-label="Customer">${q.customer}</td><td><button class="btn btn-danger" onclick="packingQueue.splice(${i},1);renderQueue()">✕</button></td>`;
                 tbody.appendChild(tr);
             });
             document.getElementById('genBtn').style.display = packingQueue.length ? 'block' : 'none';
@@ -367,10 +364,13 @@
                 q.products.forEach(p => {
                     for(let i=0; i<p.boxes; i++) {
                         boxRecords.push({
+                            id: 'B' + Date.now() + Math.floor(Math.random()*1000),
                             orderNumber: q.orderNumber,
                             customer: q.customer,
                             product: p.name,
                             boxNum: i+1,
+                            totalInBox: p.qpb,
+                            lotNumber: '',
                             workflowStatus: 'Orders Ready for Withdrawal'
                         });
                     }
@@ -380,55 +380,118 @@
             localStorage.setItem('packingQueue', "[]");
             localStorage.setItem('boxRecords', JSON.stringify(boxRecords));
             renderQueue();
-            showAlert("Labels Generated!", "success");
+            updateBadgeCounts();
+            showAlert("Labels Generated & Sent to Withdrawal", "success");
+        }
+
+        // 4. Withdrawal & Stock Adjustment Logic
+        function renderWithdrawalList() {
+            const tbody = document.getElementById('withdrawalListBody');
+            tbody.innerHTML = '';
+            
+            // Group by Order Number for withdrawal view
+            const withdrawals = boxRecords.filter(b => b.workflowStatus === 'Orders Ready for Withdrawal');
+            const uniqueOrders = [...new Set(withdrawals.map(b => b.orderNumber))];
+
+            uniqueOrders.forEach(ord => {
+                const count = boxRecords.filter(b => b.orderNumber === ord && b.workflowStatus === 'Orders Ready for Withdrawal').length;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td data-label="Order #">${ord}</td>
+                    <td data-label="Customer">${boxRecords.find(b => b.orderNumber === ord).customer}</td>
+                    <td data-label="Items">${count} Boxes</td>
+                    <td><button class="btn btn-primary" onclick="openStockEditModal('${ord}')">📦 Stock Review</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        let currentEditingOrder = '';
+
+        function openStockEditModal(ord) {
+            currentEditingOrder = ord;
+            const items = boxRecords.filter(b => b.orderNumber === ord && b.workflowStatus === 'Orders Ready for Withdrawal');
+            
+            let html = `<p style="margin-bottom:1rem">Order: <b>${ord}</b></p>`;
+            items.forEach((box) => {
+                // Find index in global array
+                const globalIdx = boxRecords.findIndex(b => b.id === box.id);
+                html += `
+                    <div style="border:1px solid #ddd; padding:1rem; margin-bottom:1rem; border-radius:8px; background:#f9f9f9">
+                        <div style="font-weight:bold; color:var(--accent); font-size:0.9rem">${box.product} (Box ${box.boxNum})</div>
+                        <div class="form-grid" style="margin-top:0.5rem">
+                            <div class="form-group">
+                                <label>Lot Number *</label>
+                                <input type="text" class="stock-lot-input" data-id="${box.id}" value="${box.lotNumber || ''}" placeholder="Enter Lot #">
+                            </div>
+                        </div>
+                    </div>`;
+            });
+            
+            document.getElementById('stockEditItems').innerHTML = html;
+            document.getElementById('stockEditModal').classList.add('active');
+        }
+
+        function submitStockAdjustment() {
+            const inputs = document.querySelectorAll('.stock-lot-input');
+            let filled = 0;
+
+            inputs.forEach(input => {
+                const boxId = input.getAttribute('data-id');
+                const newLot = input.value.trim();
+                
+                if (newLot !== "") {
+                    const idx = boxRecords.findIndex(b => b.id === boxId);
+                    if (idx !== -1) {
+                        boxRecords[idx].lotNumber = newLot;
+                        boxRecords[idx].workflowStatus = 'Waiting for QC Inspection';
+                        filled++;
+                    }
+                }
+            });
+
+            if(filled === 0) return showAlert("Please enter at least one Lot Number", "error");
+
+            localStorage.setItem('boxRecords', JSON.stringify(boxRecords));
+            closeModal('stockEditModal');
+            renderWithdrawalList();
+            updateBadgeCounts();
+            showAlert(`Saved ${filled} boxes. Sent to QC Inspection.`, "success");
+        }
+
+        // 5. Helpers & UI
+        function updateBadgeCounts() {
+            const withdrawalCount = new Set(boxRecords.filter(b => b.workflowStatus === 'Orders Ready for Withdrawal').map(b => b.orderNumber)).size;
+            document.getElementById('withdrawal-count').innerText = withdrawalCount;
+            document.getElementById('withdrawal-count').style.display = withdrawalCount > 0 ? 'inline-block' : 'none';
         }
 
         function renderOrderList() {
             const tbody = document.getElementById('orderListBody');
             tbody.innerHTML = '';
+            const query = document.getElementById('mainSearch').value.toLowerCase();
             const unique = [...new Set(boxRecords.map(b => b.orderNumber))];
+            
             unique.forEach(ord => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td data-label="Order">${ord}</td><td data-label="Status"><span class="status-badge status-updated">In Progress</span></td>`;
-                tbody.appendChild(tr);
+                if(ord.toLowerCase().includes(query)) {
+                    const sample = boxRecords.find(b => b.orderNumber === ord);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td data-label="Order">${ord}</td><td data-label="Customer">${sample.customer}</td><td data-label="Status">Active</td>`;
+                    tbody.appendChild(tr);
+                }
             });
-        }
-
-        function renderWithdrawalList() {
-            const tbody = document.getElementById('withdrawalListBody');
-            tbody.innerHTML = '';
-            const orders = boxRecords.filter(b => b.workflowStatus === 'Orders Ready for Withdrawal');
-            const unique = [...new Set(orders.map(b => b.orderNumber))];
-            unique.forEach(ord => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td data-label="Order">${ord}</td><td><button class="btn-primary" onclick="openStockEditModal('${ord}')">📦 Stock Review</button></td>`;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function openStockEditModal(ord) {
-            document.getElementById('stockEditItems').innerHTML = `<p>Adjusting Order: <b>${ord}</b></p>`;
-            document.getElementById('stockEditModal').classList.add('active');
-        }
-
-        function submitStockAdjustment() {
-            showAlert("Stock Updated", "success");
-            document.getElementById('stockEditModal').classList.remove('active');
         }
 
         function showAlert(msg, type) {
-            const d = document.createElement('div');
-            d.className = `alert alert-${type} active`; d.innerText = msg;
-            document.getElementById('alert-container').appendChild(d);
-            setTimeout(() => d.remove(), 3000);
+            const box = document.getElementById('alert-box');
+            box.innerText = msg;
+            box.className = `alert active alert-${type}`;
+            setTimeout(() => box.classList.remove('active'), 3000);
         }
 
-        function populateOrderDropdown() {
-            const sel = document.getElementById('packingListOrderNumber');
-            const unique = [...new Set(boxRecords.map(b => b.orderNumber))];
-            sel.innerHTML = unique.map(o => `<option>${o}</option>`).join('');
-        }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
+        // Init
         document.getElementById('packingDate').valueAsDate = new Date();
         addProductRow();
         renderQueue();
