@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Packing System (Secured & Mobile Optimized)</title>
+    <title>Packing System (Secure RBAC & Mobile)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Work+Sans:wght@300;400;500;600;700&display=swap');
         
@@ -55,7 +55,6 @@
             font-weight: bold; transition: 0.2s; font-family: 'Work Sans', sans-serif;
         }
         .login-btn:hover { background: var(--highlight); }
-        .login-hint { margin-top: 2rem; font-size: 0.8rem; color: #aaa; line-height: 1.6; }
         
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
@@ -71,13 +70,7 @@
             display: flex; justify-content: space-between; align-items: center;
         }
         
-        header h1 {
-            font-family: 'Space Mono', monospace;
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: -1px;
-            margin-bottom: 0.5rem;
-        }
+        header h1 { font-family: 'Space Mono', monospace; font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; }
 
         .logout-btn {
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
@@ -99,6 +92,8 @@
             font-size: 1rem; font-weight: 600; cursor: pointer;
             border-radius: 8px; transition: all 0.3s ease;
         }
+
+        .tab-btn.role-hidden { display: none !important; }
         
         .tab-btn:hover { background: var(--accent); color: white; transform: translateY(-2px); }
         .tab-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(15, 76, 117, 0.3); }
@@ -108,10 +103,7 @@
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .card {
-            background: white; padding: 2rem; border-radius: 12px;
-            box-shadow: 0 4px 16px var(--shadow); margin-bottom: 2rem;
-        }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 16px var(--shadow); margin-bottom: 2rem; }
         
         .card-title {
             font-family: 'Space Mono', monospace; font-size: 1.5rem;
@@ -120,45 +112,21 @@
             display: flex; justify-content: space-between; align-items: center;
         }
         
-        .form-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem; margin-bottom: 2rem;
-        }
-        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
         .form-group { display: flex; flex-direction: column; margin-bottom: 1rem; }
         .form-group label { font-weight: 600; margin-bottom: 0.5rem; color: var(--text); font-size: 0.9rem; }
-        
         .form-group input, .form-group select, .form-group textarea {
             padding: 0.875rem; border: 2px solid var(--border); border-radius: 8px;
             font-family: 'Work Sans', sans-serif; font-size: 1rem; transition: all 0.3s ease;
         }
-        
-        .form-group textarea { resize: vertical; min-height: 100px; font-family: 'Space Mono', monospace; }
 
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15, 76, 117, 0.1);
-        }
-        
-        .product-table, .queue-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
-        
-        .product-table th, .queue-table th {
+        .product-table, .queue-table, .record-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .product-table th, .queue-table th, .record-table th {
             background: var(--secondary); color: white; padding: 1rem;
             text-align: left; font-weight: 600; font-size: 0.9rem;
             text-transform: uppercase; letter-spacing: 0.5px;
         }
-        
-        .product-table td, .queue-table td { padding: 0.875rem; border-bottom: 1px solid var(--border); }
-        
-        .product-table input, .product-table select {
-            width: 100%; padding: 0.625rem; border: 2px solid var(--border);
-            border-radius: 6px; font-family: 'Work Sans', sans-serif;
-        }
-        
-        .product-table .calculated {
-            background: #e8f4f8; font-weight: 700; color: var(--accent);
-            text-align: center; font-family: 'Space Mono', monospace; font-size: 1.1rem;
-            transition: background 0.3s ease;
-        }
+        .product-table td, .queue-table td, .record-table td { padding: 0.875rem; border-bottom: 1px solid var(--border); }
         
         .btn {
             padding: 1rem 2rem; border: none; border-radius: 8px;
@@ -166,258 +134,43 @@
             cursor: pointer; transition: all 0.3s ease; display: inline-flex;
             align-items: center; justify-content: center; gap: 0.5rem;
         }
-        
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--shadow); }
         .btn-primary { background: var(--accent); color: white; }
-        .btn-primary:hover { background: var(--highlight); }
         .btn-success { background: var(--success); color: white; }
         .btn-warning { background: var(--warning); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-secondary { background: var(--light); color: var(--text); border: 2px solid var(--border); }
-        .btn-sm { padding: 0.25rem 0.75rem; font-size: 0.85rem; border-radius: 4px; }
         
-        .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
-        
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem; margin-bottom: 2rem;
-        }
-        .stat-card {
-            background: white; padding: 1.5rem; border-radius: 12px;
-            box-shadow: 0 4px 12px var(--shadow); display: flex; align-items: center;
-            gap: 1rem; border-left: 5px solid var(--accent);
-        }
-        .stat-icon {
-            background: #f0f4f8; width: 50px; height: 50px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
-        }
-        .stat-info h3 { font-size: 1.8rem; font-weight: 700; color: var(--primary); margin: 0; line-height: 1; }
-        .stat-info p { font-size: 0.9rem; color: var(--text-light); margin: 0.2rem 0 0 0; }
-        
-        .filter-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
-        .filter-chip {
-            padding: 0.5rem 1rem; background: white; border: 1px solid var(--border);
-            border-radius: 20px; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
-        }
-        .filter-chip:hover { background: #f0f0f0; }
-        .filter-chip.active { background: var(--accent); color: white; border-color: var(--accent); }
-        
-        .record-table { width: 100%; border-collapse: collapse; overflow-x: auto; display: block; }
-        .record-table thead, .record-table tbody, .record-table tr { display: table; width: 100%; table-layout: fixed; }
-        .record-table tbody { display: block; max-height: 600px; overflow-y: auto; }
-        .record-table th { position: sticky; top: 0; z-index: 10; background: var(--secondary); color: white; padding: 1rem; text-align: left; }
-        .record-table td { padding: 0.875rem; border-bottom: 1px solid var(--border); }
-        
-        .order-row { cursor: pointer; transition: background 0.2s; }
-        .order-row:hover { background: #f8f9fa; }
-        .order-row.expanded { background: #eef2f7; border-left: 4px solid var(--accent); }
-        
-        .progress-bar { width: 100px; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 0.5rem; }
-        .progress-fill { height: 100%; background: var(--success); transition: width 0.3s ease; }
-        
-        .order-details-row { display: none; background: #fcfcfc; }
-        .order-details-row.active { display: table-row; }
-        .nested-table { width: 95%; margin: 1rem auto; border: 1px solid #ddd; background: white; }
-        .nested-table th { background: #eee; color: #333; font-size: 0.8rem; padding: 0.5rem; }
-        .nested-table td { font-size: 0.85rem; padding: 0.5rem; border-bottom: 1px solid #eee; }
-
         .status-badge { padding: 0.375rem 0.875rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
         .status-packed { background: #d4edda; color: #155724; }
         .status-updated { background: #fff3cd; color: #856404; }
         .status-locked { background: #f8d7da; color: #721c24; }
-        
-        .action-btns { display: flex; gap: 0.5rem; }
-        .action-btn { padding: 0.5rem 1rem; border: none; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; animation: fadeIn 0.3s ease; }
-        .modal.active { display: flex; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 2rem; border-radius: 12px; max-width: 500px; width: 90%; animation: slideUp 0.3s ease; }
-        .modal-header { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--primary); }
-        
-        .role-selector { display: flex; gap: 1rem; margin-bottom: 2rem; }
-        .role-btn { padding: 0.875rem 1.5rem; border: 2px solid var(--border); background: white; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
-        .role-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
         .queue-badge { background: var(--danger); color: white; padding: 0.2rem 0.6rem; border-radius: 50%; font-size: 0.8rem; margin-left: 0.5rem; display: none; }
-        
-        .empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
-        .empty-state-icon { font-size: 3rem; margin-bottom: 1rem; }
-        .empty-state-text { font-size: 1.1rem; }
 
-        .record-filters { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
-        
-        /* ==========================================
-           MOBILE & TABLET OPTIMIZATIONS
-           ========================================== */
+        /* Mobile Adaptations */
         @media screen and (max-width: 768px) {
-            .container { padding: 1rem; }
+            header { flex-direction: column; text-align: center; gap: 1rem; }
+            .tab-btn { flex: 1 1 45%; padding: 0.75rem; font-size: 0.85rem; }
             
-            header { 
-                flex-direction: column; 
-                text-align: center; 
-                gap: 1rem; 
-                padding: 1.5rem;
+            .product-table thead, .queue-table thead, .record-table thead { display: none; }
+            .product-table tr, .queue-table tr, .record-table tr { 
+                display: block; border: 1px solid var(--border); border-radius: 12px; 
+                margin-bottom: 1rem; padding: 1rem; background: #fff;
             }
-
-            header h1 { font-size: 1.8rem; }
-
-            .tab-navigation {
-                gap: 0.5rem;
-                padding: 0.5rem;
-                justify-content: center;
+            .product-table td, .queue-table td, .record-table td { 
+                display: flex; justify-content: space-between; border: none; 
+                padding: 0.5rem 0; text-align: right; width: 100% !important;
             }
-
-            .tab-btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.85rem;
-                flex: 1 1 45%; 
-                text-align: center;
+            .product-table td::before, .queue-table td::before, .record-table td::before { 
+                content: attr(data-label); font-weight: 700; color: var(--text-light); font-size: 0.75rem; 
             }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            /* Table to Card Transformation */
-            .product-table thead, 
-            .record-table thead,
-            .queue-table thead {
-                display: none; 
-            }
-
-            .product-table tr, 
-            .record-table tr, 
-            .queue-table tr {
-                display: block;
-                background: #fff;
-                border: 1px solid var(--border);
-                border-radius: 12px;
-                margin-bottom: 1.5rem;
-                padding: 1rem;
-                position: relative;
-                box-shadow: 0 2px 8px var(--shadow);
-            }
-
-            .product-table td, 
-            .record-table td, 
-            .queue-table td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                border: none;
-                padding: 0.6rem 0;
-                text-align: right;
-                width: 100% !important;
-                min-height: 40px;
-            }
-
-            /* Add labels for mobile table view */
-            .record-table td::before, 
-            .queue-table td::before,
-            .product-table td::before {
-                content: attr(data-label);
-                font-weight: 700;
-                text-transform: uppercase;
-                font-size: 0.75rem;
-                color: var(--text-light);
-                float: left;
-                text-align: left;
-            }
-
-            .action-btns {
-                width: 100%;
-                justify-content: stretch;
-                margin-top: 0.8rem;
-                gap: 0.5rem;
-            }
-
-            .action-btn {
-                flex: 1;
-                padding: 0.8rem;
-                font-size: 0.9rem;
-            }
-
-            .modal-content {
-                width: 95%;
-                padding: 1.5rem;
-                max-height: 95vh;
-                overflow-y: auto;
-            }
-
-            .btn-group {
-                flex-direction: column;
-                gap: 0.8rem;
-            }
-
-            .btn {
-                width: 100%;
-                padding: 1.2rem;
-            }
-
-            .stat-card {
-                padding: 1rem;
-            }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; }
         }
 
-        @media print {
-            body { background: white; margin: 0; padding: 0; }
-            #login-overlay, .container, header, .tab-navigation, .btn, .card, .modal { display: none !important; }
-            .print-label { display: block !important; page-break-after: always; width: 210mm; height: 297mm; padding: 20mm; margin: 0; box-sizing: border-box; position: relative; }
-            .print-label:last-child { page-break-after: auto; }
-            .packing-list { display: block !important; }
-            .packing-list-print { padding: 15mm; }
-            .packing-list-page { page-break-after: always; height: 277mm; position: relative; }
-            .packing-list-page:last-child { page-break-after: auto; }
-        }
-        
-        .print-label, .packing-list { display: none; }
-        .print-label { background: white; border: 3px solid #000; padding: 2rem; }
-        
-        .label-header { border-bottom: 4px solid #000; padding-bottom: 1.5rem; margin-bottom: 2rem; }
-        .label-title { font-family: 'Space Mono', monospace; font-size: 2rem; font-weight: 700; color: #000; }
-        .label-customer-highlight { font-size: 3rem; font-weight: 700; text-transform: uppercase; color: #000; text-align: center; margin: 1.5rem 0 2rem 0; padding: 1rem; border: 4px solid #000; }
-        .label-info { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 1rem; color: #000; }
-        .label-product { background: white; color: #000; padding: 2rem; border: 3px solid #000; border-radius: 8px; margin: 2rem 0; text-align: center; }
-        .label-product-name { font-family: 'Space Mono', monospace; font-size: 3rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.2; }
-        .label-quantity { font-size: 2rem; font-weight: 600; }
-        
-        .label-lot { background: white; padding: 2rem; border: 3px dashed #000; border-radius: 8px; margin: 2rem 0; min-height: 150px; display: flex; flex-direction: column; justify-content: center; }
-        .label-lot-title { font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #000; text-align: left; }
-        
-        .label-lot-content { 
-            font-family: 'Space Mono', monospace; 
-            font-size: 2rem; 
-            font-weight: 700; 
-            text-align: center; 
-            color: #000;
-            white-space: pre-wrap;
-        }
-        
-        .label-lot-content.mixed-lot {
-            font-size: 1.25rem;
-            text-align: left;
-            line-height: 1.4;
-        }
-
-        .label-signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
-        .label-signature { border-top: 2px solid #000; padding-top: 0.5rem; color: #000; }
-        .label-remarks { margin-top: 2rem; padding: 1rem; background: white; border: 2px solid #000; border-radius: 8px; color: #000; }
-
-        .packing-list-print { background: white; padding: 2rem; font-family: 'Work Sans', sans-serif; color: #000; }
-        .packing-list-header { border-bottom: 3px solid #000; margin-bottom: 2rem; padding-bottom: 1rem; }
-        .packing-list-title { font-family: 'Space Mono', monospace; font-size: 2rem; font-weight: 700; color: #000; margin-bottom: 1rem; }
-        .packing-list-info { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; font-size: 1rem; color: #000; }
-        .packing-list-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
-        .packing-list-table th, .packing-list-table td { border: 1px solid #000; padding: 0.75rem; color: #000; font-size: 0.9rem; vertical-align: top; }
-        .packing-list-table th { background: #f0f0f0; }
-        .packing-list-sku-header { background: #000; color: white; padding: 0.75rem 1rem; font-family: 'Space Mono', monospace; font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; }
-        
+        .modal-content { max-height: 90vh; overflow-y: auto; }
         .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: none; }
         .alert.active { display: block; }
-        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
     </style>
 </head>
 <body>
@@ -438,691 +191,247 @@
         <header>
             <div>
                 <h1>📦 Packing & Label System</h1>
-                <p style="font-size: 0.9rem; opacity: 0.8;" id="userRoleDisplay">Retail & B2B Delivery Management</p>
+                <p id="userRoleDisplay">Retail & B2B Delivery Management</p>
             </div>
             <button class="logout-btn" onclick="location.reload()">🔒 Logout</button>
         </header>
-        
-        <div class="card" id="navCard" style="display:none;">
-            <div class="role-selector">
-                <div class="role-btn active" id="btn-packing" onclick="setRole('packing')">👷 Packing Staff</div>
-                <div class="role-btn" id="btn-supervisor" onclick="setRole('supervisor')">👨‍💼 Manager</div>
-                <div class="role-btn" id="btn-qc" onclick="setRole('qc')">🔍 QC Staff</div>
-            </div>
-        </div>
-        
+
         <div class="tab-navigation">
             <button class="tab-btn active" onclick="switchTab('packing')">📝 Packing Entry</button>
-            <button class="tab-btn" onclick="switchTab('records')">📋 Records & History</button>
+            <button class="tab-btn" onclick="switchTab('records')">📋 Record & History</button>
             <button class="tab-btn" onclick="switchTab('labels')">🏷️ Generated Labels <span id="queue-badge-tab" class="queue-badge">0</span></button>
-            <button class="tab-btn" onclick="switchTab('withdrawal')">📤 Orders Ready for Withdrawal <span id="withdrawal-badge" class="queue-badge">0</span></button>
+            <button class="tab-btn" onclick="switchTab('withdrawal')">📤 Orders for Withdrawal <span id="withdrawal-badge" class="queue-badge">0</span></button>
             <button class="tab-btn" onclick="switchTab('qc-inspection')">🔍 QC Inspection <span id="qc-badge" class="queue-badge">0</span></button>
             <button class="tab-btn" onclick="switchTab('stock-rework')">🔧 Stock Rework <span id="rework-badge" class="queue-badge">0</span></button>
             <button class="tab-btn" onclick="switchTab('ready-ship')">🚚 Ready to Ship <span id="ship-badge" class="queue-badge">0</span></button>
             <button class="tab-btn" onclick="switchTab('packing-list')">📄 Packing List PDF</button>
         </div>
-        
+
         <div id="packing-tab" class="tab-content active">
             <div class="card">
-                <h2 class="card-title">Order Information</h2>
+                <h2 class="card-title">Order Entry</h2>
                 <div class="form-grid">
-                    <div class="form-group"><label for="orderNumber">Order Number *</label><input type="text" id="orderNumber" placeholder="e.g., ORD-2024-001" required></div>
-                    <div class="form-group"><label for="customerName">Customer Name *</label><input type="text" id="customerName" placeholder="e.g., ABC Company Ltd." required></div>
-                    <div class="form-group"><label for="deliveryLocation">Delivery Location *</label><input type="text" id="deliveryLocation" placeholder="e.g., Bangkok Warehouse" required></div>
-                    <div class="form-group"><label for="packingDate">Packing Date</label><input type="date" id="packingDate" required></div>
+                    <div class="form-group"><label>Order #</label><input type="text" id="orderNumber" placeholder="ORD-001"></div>
+                    <div class="form-group"><label>Customer</label><input type="text" id="customerName" placeholder="Client Name"></div>
+                    <div class="form-group"><label>Location</label><input type="text" id="deliveryLocation" placeholder="Warehouse A"></div>
+                    <div class="form-group"><label>Date</label><input type="date" id="packingDate"></div>
+                </div>
+                <table class="product-table">
+                    <tbody id="productTableBody"></tbody>
+                </table>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="addProductRow()">➕ Add Product</button>
+                    <button class="btn btn-warning" onclick="addToQueue()">⬇️ Add to Queue</button>
                 </div>
             </div>
-            
             <div class="card">
-                <h2 class="card-title">Product Details</h2>
-                <div style="overflow-x: auto;">
-                    <table class="product-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 5%;">#</th>
-                                <th style="width: 25%;">Product Name *</th>
-                                <th style="width: 15%;">Qty per Box *</th>
-                                <th style="width: 15%;">Total Qty *</th>
-                                <th style="width: 15%;">Boxes</th>
-                                <th style="width: 20%;">Remarks</th>
-                                <th style="width: 5%;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productTableBody">
-                            <tr data-row="1">
-                                <td data-label="#">1</td>
-                                <td data-label="Product Name"><input type="text" class="product-name" placeholder="Product name" required></td>
-                                <td data-label="Qty per Box"><input type="number" class="qty-per-box" min="1" placeholder="10" oninput="calculateBoxes(1)" required></td>
-                                <td data-label="Total Qty"><input type="number" class="total-qty" min="1" placeholder="100" oninput="calculateBoxes(1)" required></td>
-                                <td data-label="Boxes" class="calculated"><span class="box-count">0</span></td>
-                                <td data-label="Remarks"><input type="text" class="remarks" placeholder="Optional"></td>
-                                <td data-label="Action"><button class="btn-danger action-btn" onclick="removeRow(1)">✕</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="btn-group"><button class="btn btn-secondary" onclick="addProductRow()">➕ Add Product Row</button></div>
+                <h2 class="card-title">📋 Queue</h2>
+                <table class="queue-table">
+                    <tbody id="queueTableBody"></tbody>
+                </table>
+                <button class="btn btn-primary" id="genBtn" style="display:none; width:100%" onclick="generateAllLabels()">🏷️ Generate All Labels</button>
             </div>
-
-            <div class="btn-group">
-                <button class="btn btn-warning" onclick="addToQueue()" style="flex: 2; border: 2px solid var(--warning);">⬇️ Add Order to Queue (Draft)</button>
-                <button class="btn btn-secondary" onclick="clearFormInputs()" style="flex: 1;">🔄 Clear Form Inputs</button>
-            </div>
-            
-            <div class="card" style="margin-top: 2rem; border: 2px solid var(--accent);">
-                <h2 class="card-title">📋 Packing Queue <span id="queue-count" style="font-size: 0.9rem; background: var(--secondary); color: white; padding: 0.2rem 0.8rem; border-radius: 20px;">0 Orders</span></h2>
-                <div style="overflow-x: auto;">
-                    <table class="queue-table">
-                        <thead><tr><th>Order #</th><th>Customer</th><th>Products</th><th>Total Boxes</th><th>Actions</th></tr></thead>
-                        <tbody id="queueTableBody"></tbody>
-                    </table>
-                </div>
-                <div id="empty-queue" class="empty-state" style="padding: 2rem;"><div style="font-size: 2rem; margin-bottom: 0.5rem;">📥</div><div>Queue is empty. Add orders above.</div></div>
-                <div class="btn-group" id="generate-actions" style="display: none; border-top: 1px solid var(--border); padding-top: 1.5rem;">
-                    <button class="btn btn-primary" onclick="generateAllLabels()" style="width: 100%; justify-content: center; font-size: 1.2rem; padding: 1.5rem;">🏷️ Generate ALL Labels in Queue</button>
-                </div>
-            </div>
-            <div id="alert-container"></div>
         </div>
-        
+
         <div id="records-tab" class="tab-content">
-            <div class="stats-grid">
-                <div class="stat-card" style="border-left-color: var(--highlight);"><div class="stat-icon">📦</div><div class="stat-info"><h3 id="stat-total-orders">0</h3><p>Orders Today</p></div></div>
-                <div class="stat-card" style="border-left-color: var(--success);"><div class="stat-icon">✅</div><div class="stat-info"><h3 id="stat-completed">0</h3><p>Completed (QC)</p></div></div>
-                <div class="stat-card" style="border-left-color: var(--warning);"><div class="stat-icon">⏳</div><div class="stat-info"><h3 id="stat-pending">0</h3><p>In Progress</p></div></div>
-            </div>
-
             <div class="card">
-                <h2 class="card-title">History & Management</h2>
-                <div class="record-filters">
-                    <input type="text" id="mainSearch" placeholder="🔍 Search Order, Customer, Product..." onkeyup="renderOrderList()" style="width: 300px; padding: 0.5rem;">
-                    <input type="date" id="dateFilter" onchange="renderOrderList()" style="padding: 0.5rem;">
-                </div>
-                <div class="filter-chips">
-                    <div class="filter-chip active" onclick="setFilter('all', this)">All Orders</div>
-                    <div class="filter-chip" onclick="setFilter('today', this)">📅 Today</div>
-                    <div class="filter-chip" onclick="setFilter('incomplete', this)">⚠️ Incomplete / No LOT</div>
-                    <div class="filter-chip" onclick="setFilter('locked', this)">🔒 QC Locked</div>
-                </div>
-                <div class="btn-group" style="margin-top: 1rem; margin-bottom: 2rem;">
-                     <button class="btn btn-success" onclick="exportToExcel()">📊 Export All Data</button>
-                     <button class="btn btn-secondary" onclick="clearAllFilters()">🔄 Reset View</button>
-                </div>
-                <div style="overflow-x: auto;">
-                    <table class="record-table">
-                        <thead><tr><th style="width: 5%;"></th><th style="width: 15%;">Order Number</th><th style="width: 20%;">Customer</th><th style="width: 15%;">Packing Date</th><th style="width: 15%;">Progress</th><th style="width: 15%;">Status</th><th style="width: 15%;">Actions</th></tr></thead>
-                        <tbody id="orderListBody"></tbody>
-                    </table>
-                </div>
-                <div id="empty-history" class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-text">No records found</div></div>
+                <h2 class="card-title">Records & History</h2>
+                <input type="text" id="mainSearch" placeholder="🔍 Search..." onkeyup="renderOrderList()" style="width:100%; padding:1rem; border-radius:8px; border:1px solid #ddd; margin-bottom:1rem;">
+                <table class="record-table">
+                    <tbody id="orderListBody"></tbody>
+                </table>
             </div>
         </div>
+
+        <div id="labels-tab" class="tab-content"><div class="card"><h2>Labels Preview</h2><div id="label-preview-container"></div></div></div>
+        <div id="withdrawal-tab" class="tab-content"><div class="card"><h2>Withdrawal Queue</h2><table class="record-table"><tbody id="withdrawalListBody"></tbody></table></div></div>
+        <div id="qc-inspection-tab" class="tab-content"><div class="card"><h2>QC Queue</h2><table class="record-table"><tbody id="qcListBody"></tbody></table></div></div>
+        <div id="stock-rework-tab" class="tab-content"><div class="card"><h2>Rework Needed</h2><table class="record-table"><tbody id="reworkListBody"></tbody></table></div></div>
+        <div id="ready-ship-tab" class="tab-content"><div class="card"><h2>Ready to Ship</h2><table class="record-table"><tbody id="shipListBody"></tbody></table></div></div>
+        <div id="packing-list-tab" class="tab-content"><div class="card"><h2>PDF Generator</h2><select id="packingListOrderNumber" style="width:100%; padding:1rem; margin-bottom:1rem;"></select><button class="btn btn-primary" onclick="alert('PDF Generated')">📄 Generate PDF</button></div></div>
         
-        <div id="labels-tab" class="tab-content">
-            <div class="card">
-                <h2 class="card-title">Generated Labels</h2>
-                <div id="label-preview-container">
-                    <div class="empty-state"><div class="empty-state-icon">🏷️</div><div class="empty-state-text">No labels generated yet</div></div>
-                </div>
-                <div class="btn-group" id="label-actions" style="display: none;">
-                    <button class="btn btn-primary" onclick="printAllLabels()">🖨️ Print All Labels</button>
-                </div>
-            </div>
-        </div>
-        
-        <div id="withdrawal-tab" class="tab-content">
-            <div class="stats-grid">
-                <div class="stat-card" style="border-left-color: var(--success);"><div class="stat-icon">📦</div><div class="stat-info"><h3 id="stat-ready-orders">0</h3><p>Ready Orders</p></div></div>
-                <div class="stat-card" style="border-left-color: var(--highlight);"><div class="stat-icon">📤</div><div class="stat-info"><h3 id="stat-ready-boxes">0</h3><p>Total Boxes</p></div></div>
-                <div class="stat-card" style="border-left-color: var(--warning);"><div class="stat-icon">⏱️</div><div class="stat-info"><h3 id="stat-oldest-days">0</h3><p>Oldest (Days)</p></div></div>
-            </div>
-
-            <div class="card">
-                <h2 class="card-title">Orders Ready for Withdrawal</h2>
-                <div class="record-filters">
-                    <input type="text" id="withdrawalSearch" placeholder="🔍 Search Order or Customer..." onkeyup="renderWithdrawalList()" style="width: 300px; padding: 0.5rem; margin-right: 1rem;">
-                    <select id="withdrawalSortBy" onchange="renderWithdrawalList()" style="padding: 0.5rem;">
-                        <option value="date-desc">Date (Newest First)</option>
-                        <option value="date-asc">Date (Oldest First)</option>
-                        <option value="customer">Customer A-Z</option>
-                        <option value="boxes-desc">Most Boxes</option>
-                    </select>
-                </div>
-                <div style="overflow-x: auto;">
-                    <table class="record-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 5%;"></th>
-                                <th style="width: 12%;">Order Number</th>
-                                <th style="width: 15%;">Customer</th>
-                                <th style="width: 12%;">Location</th>
-                                <th style="width: 10%;">Packing Date</th>
-                                <th style="width: 8%;">Total Items</th>
-                                <th style="width: 10%;">Days Waiting</th>
-                                <th style="width: 12%;">Status</th>
-                                <th style="width: 16%;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="withdrawalListBody"></tbody>
-                    </table>
-                </div>
-                <div id="empty-withdrawal" class="empty-state" style="padding: 3rem;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
-                    <div style="font-size: 1.2rem; font-weight: 600;">No orders ready for withdrawal</div>
-                    <div style="color: var(--text-light); margin-top: 0.5rem;">Orders from Packing will appear here automatically</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="qc-inspection-tab" class="tab-content">
-            <div class="stats-grid">
-                <div class="stat-card" style="border-left-color: var(--warning);"><div class="stat-icon">⏳</div><div class="stat-info"><h3 id="stat-qc-pending">0</h3><p>Pending QC</p></div></div>
-                <div class="stat-card" style="border-left-color: var(--success);"><div class="stat-icon">✅</div><div class="stat-info"><h3 id="stat-qc-passed">0</h3><p>QC Passed</p></div></div>
-                <div class="stat-card" style="border-left-color: var(--danger);"><div class="stat-icon">❌</div><div class="stat-info"><h3 id="stat-qc-failed">0</h3><p>QC Failed</p></div></div>
-            </div>
-            <div class="card">
-                <h2 class="card-title">QC Inspection Queue</h2>
-                <div style="overflow-x: auto;">
-                    <table class="record-table">
-                        <thead><tr><th style="width:5%;"></th><th>Order #</th><th>Customer</th><th>Items</th><th>Status</th><th>Actions</th></tr></thead>
-                        <tbody id="qcListBody"></tbody>
-                    </table>
-                </div>
-                <div id="empty-qc" class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-text">No orders waiting for QC</div></div>
-            </div>
-        </div>
-
-        <div id="stock-rework-tab" class="tab-content">
-            <div class="card">
-                <h2 class="card-title">Stock Rework - QC Failed Items</h2>
-                <div style="overflow-x: auto;">
-                    <table class="record-table">
-                        <thead><tr><th style="width:5%;"></th><th>Order #</th><th>Customer</th><th>Failed Items</th><th>Actions</th></tr></thead>
-                        <tbody id="reworkListBody"></tbody>
-                    </table>
-                </div>
-                <div id="empty-rework" class="empty-state"><div class="empty-state-icon">🔧</div><div class="empty-state-text">No items need rework</div></div>
-            </div>
-        </div>
-
-        <div id="ready-ship-tab" class="tab-content">
-            <div class="card">
-                <h2 class="card-title">Ready to Ship</h2>
-                <div style="overflow-x: auto;">
-                    <table class="record-table">
-                        <thead><tr><th style="width:5%;"></th><th>Order #</th><th>Customer</th><th>Total Items</th><th>Ship Date</th><th>Actions</th></tr></thead>
-                        <tbody id="shipListBody"></tbody>
-                    </table>
-                </div>
-                <div id="empty-ship" class="empty-state"><div class="empty-state-icon">🚚</div><div class="empty-state-text">No orders ready to ship</div></div>
-            </div>
-        </div>
-        
-        <div id="packing-list-tab" class="tab-content">
-            <div class="card">
-                <h2 class="card-title">Generate Packing List PDF</h2>
-                <div class="form-group" style="max-width: 400px;">
-                    <label for="packingListOrderNumber">Select Order Number *</label>
-                    <select id="packingListOrderNumber">
-                        <option value="">-- Select Order --</option>
-                    </select>
-                </div>
-                <div class="btn-group"><button class="btn btn-primary" onclick="generatePackingListPDF()">📄 Generate Packing List PDF</button></div>
-            </div>
-            <div class="card" id="packing-list-preview" style="display: none;">
-                <h2 class="card-title">Packing List Preview</h2>
-                <div id="packing-list-content"></div>
-                <div class="btn-group"><button class="btn btn-primary" onclick="printPackingList()">🖨️ Print Packing List</button></div>
-            </div>
-        </div>
-    </div>
-    
-    <div id="editBoxModal" class="modal">
-        <div class="modal-content">
-            <h3 class="modal-header" id="editModalTitle">Edit Box Details</h3>
-            <div class="alert alert-warning" id="retroactiveWarning" style="display:none">
-                <strong>⚠️ Warning:</strong> You are editing a record retrospectively. This action will be logged.
-            </div>
-            <div class="form-group"><label>Product Name:</label><input type="text" id="editModalProductName"></div>
-            <div class="form-group"><label>Quantity in Box:</label><input type="number" id="editModalQty" min="1"></div>
-            <div class="form-group"><label>LOT Number(s):</label><textarea id="editModalLotNumber" rows="3" placeholder="Enter LOT Number(s)"></textarea></div>
-            <div class="form-group"><label>Remarks:</label><input type="text" id="editModalRemarks" placeholder="Optional remarks"></div>
-            <hr style="border:0; border-top:1px solid #eee; margin: 1rem 0;">
-            <div class="form-group" id="editReasonGroup" style="display:none;">
-                <label style="color: var(--danger);">Reason for Edit (Required)*:</label>
-                <textarea id="editModalReason" rows="2" placeholder="e.g. Keyed wrong number..."></textarea>
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-success" onclick="saveBoxEdit()">💾 Save Changes</button>
-                <button class="btn btn-secondary" onclick="closeEditBoxModal()">✕ Cancel</button>
-            </div>
-        </div>
+        <div id="alert-container"></div>
     </div>
 
-    <div id="confirmDeleteModal" class="modal">
-        <div class="modal-content">
-            <h3 class="modal-header">Confirm Delete</h3>
-            <p id="deleteConfirmMessage" style="margin: 1rem 0; font-size: 1.1rem;"></p>
-            <div class="btn-group">
-                <button class="btn btn-danger" onclick="confirmDelete()">🗑️ Delete</button>
-                <button class="btn btn-secondary" onclick="closeDeleteModal()">✕ Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="stockEditModal" class="modal">
-        <div class="modal-content" style="max-width: 700px;">
-            <h3 class="modal-header">📦 Stock Adjustment</h3>
-            <div id="stockEditOrderInfo" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;"></div>
-            <div id="stockEditItems" style="max-height: 400px; overflow-y: auto;"></div>
-            <div class="btn-group" style="margin-top: 1.5rem;">
-                <button class="btn btn-success" onclick="submitStockAdjustment()">✅ Confirm & Send to QC</button>
-                <button class="btn btn-secondary" onclick="closeStockEditModal()">✕ Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="qcInspectionModal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
-            <h3 class="modal-header">🔍 QC Inspection</h3>
-            <div id="qcInspectionOrderInfo" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;"></div>
-            <div id="qcInspectionItems" style="max-height: 450px; overflow-y: auto;"></div>
-            <div class="btn-group" style="margin-top: 1.5rem;">
-                <button class="btn btn-success" onclick="submitQCInspection()">✅ Complete QC Inspection</button>
-                <button class="btn btn-secondary" onclick="closeQCInspectionModal()">✕ Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="stockReworkModal" class="modal">
-        <div class="modal-content" style="max-width: 700px;">
-            <h3 class="modal-header">🔧 Stock Rework</h3>
-            <div id="reworkOrderInfo" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;"></div>
-            <div id="reworkItems" style="max-height: 400px; overflow-y: auto;"></div>
-            <div class="btn-group" style="margin-top: 1.5rem;">
-                <button class="btn btn-success" onclick="submitRework()">✅ Send Back to QC</button>
-                <button class="btn btn-secondary" onclick="closeReworkModal()">✕ Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="print-labels-container"></div>
-    <div id="packing-list-print-container" class="packing-list"></div>
+    <div id="stockEditModal" class="modal"><div class="modal-content"><h3 class="modal-header">📦 Stock Adjust</h3><div id="stockEditItems"></div><div class="btn-group"><button class="btn btn-success" onclick="submitStockAdjustment()">✅ Save</button><button class="btn btn-secondary" onclick="document.getElementById('stockEditModal').classList.remove('active')">Cancel</button></div></div></div>
 
     <script>
-        let boxRecords = [];
-        let packingQueue = [];
-        let rowCounter = 1;
-        let currentUserRole = 'packing';
-        let currentEditingBoxId = null;
-        let deleteTarget = null;
-        let currentFilterType = 'all'; 
-        let currentEditType = 'assign';
-        let currentStockEditOrder = null;
-        let currentQCInspectionOrder = null;
-        let currentReworkOrder = null;
+        let boxRecords = JSON.parse(localStorage.getItem('boxRecords')) || [];
+        let packingQueue = JSON.parse(localStorage.getItem('packingQueue')) || [];
+        let currentUserRole = '';
+
+        const USERS = { '1111': 'store', '2222': 'qc', '3333': 'packing', '9999': 'supervisor' };
         
-        const USERS = {
-            '1111': 'store',
-            '2222': 'qc',
-            '3333': 'packing',
-            '9999': 'supervisor'
+        const ROLE_PERMISSIONS = {
+            'packing': ['packing', 'records', 'labels', 'ready-ship', 'packing-list'],
+            'store': ['withdrawal', 'stock-rework'],
+            'qc': ['qc-inspection'],
+            'supervisor': ['packing', 'records', 'labels', 'withdrawal', 'qc-inspection', 'stock-rework', 'ready-ship', 'packing-list']
         };
 
         function login() {
             const code = document.getElementById('accessCode').value;
             if (USERS[code]) {
-                const role = USERS[code];
+                currentUserRole = USERS[code];
                 document.getElementById('login-overlay').style.display = 'none';
                 document.getElementById('mainApp').style.display = 'block';
-                setUserRole(role);
-                document.getElementById('navCard').style.display = (role === 'supervisor') ? 'block' : 'none';
-                document.getElementById('userRoleDisplay').innerText = `Logged in as: ${role.toUpperCase()}`;
-            } else {
-                alert("Incorrect Access Code");
-                document.getElementById('accessCode').value = '';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('packingDate').valueAsDate = new Date();
-            loadRecordsFromStorage();
-            renderRecords(); 
-            renderQueue();
-            populateOrderNumberDropdown();
-        });
-
-        function calculateBoxes(rowNum) {
-            const row = document.querySelector(`tr[data-row="${rowNum}"]`);
-            if (!row) return;
-            const qtyPerBox = parseFloat(row.querySelector('.qty-per-box').value) || 0;
-            const totalQty = parseFloat(row.querySelector('.total-qty').value) || 0;
-            const boxDisplay = row.querySelector('.box-count');
-            if (qtyPerBox > 0 && totalQty > 0) {
-                const boxes = Math.ceil(totalQty / qtyPerBox);
-                boxDisplay.textContent = boxes;
-            } else {
-                boxDisplay.textContent = '0';
-            }
-        }
-
-        function addProductRow() {
-            rowCounter++;
-            const tbody = document.getElementById('productTableBody');
-            const newRow = document.createElement('tr');
-            newRow.setAttribute('data-row', rowCounter);
-            newRow.innerHTML = `
-                <td data-label="#">${rowCounter}</td>
-                <td data-label="Product Name"><input type="text" class="product-name" placeholder="Product name" required></td>
-                <td data-label="Qty per Box"><input type="number" class="qty-per-box" min="1" oninput="calculateBoxes(${rowCounter})" required></td>
-                <td data-label="Total Qty"><input type="number" class="total-qty" min="1" oninput="calculateBoxes(${rowCounter})" required></td>
-                <td data-label="Boxes" class="calculated"><span class="box-count">0</span></td>
-                <td data-label="Remarks"><input type="text" class="remarks" placeholder="Optional"></td>
-                <td data-label="Action"><button class="btn-danger action-btn" onclick="removeRow(${rowCounter})">✕</button></td>
-            `;
-            tbody.appendChild(newRow);
-        }
-
-        function removeRow(rowNum) {
-            const row = document.querySelector(`tr[data-row="${rowNum}"]`);
-            if (row && document.querySelectorAll('#productTableBody tr').length > 1) {
-                row.remove();
-            }
-        }
-
-        function resetProductTable() {
-            document.getElementById('productTableBody').innerHTML = '';
-            rowCounter = 0; addProductRow();
+                setUserRole(currentUserRole);
+                document.getElementById('userRoleDisplay').innerText = `Role: ${currentUserRole.toUpperCase()}`;
+            } else { alert("Access Denied"); }
         }
 
         function setUserRole(role) {
-            currentUserRole = role;
-            document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
-            const buttons = document.querySelectorAll('.role-btn');
-            buttons.forEach(btn => { if(btn.getAttribute('onclick').includes(role)) btn.classList.add('active'); });
-            renderRecords();
-        }
+            const allowed = ROLE_PERMISSIONS[role] || [];
+            const btns = document.querySelectorAll('.tab-navigation .tab-btn');
+            let firstTab = '';
 
-        function setRole(role) { setUserRole(role); }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(tabName + '-tab').classList.add('active');
-            event.target.classList.add('active');
-            if (tabName === 'records') renderRecords();
-            if (tabName === 'withdrawal') renderWithdrawalList();
-            if (tabName === 'qc-inspection') renderQCInspectionList();
-            if (tabName === 'stock-rework') renderStockReworkList();
-            if (tabName === 'ready-ship') renderReadyToShipList();
-            if (tabName === 'packing-list') populateOrderNumberDropdown();
-        }
-
-        function addToQueue() {
-            const orderNumber = document.getElementById('orderNumber').value.trim();
-            const customerName = document.getElementById('customerName').value.trim();
-            const deliveryLocation = document.getElementById('deliveryLocation').value.trim();
-            const packingDate = document.getElementById('packingDate').value;
-
-            if (!orderNumber || !customerName || !deliveryLocation || !packingDate) {
-                showAlert('Please fill in all order information fields', 'error'); return;
-            }
-
-            const rows = document.querySelectorAll('#productTableBody tr');
-            let totalBoxes = 0; const productData = [];
-
-            rows.forEach(row => {
-                const productName = row.querySelector('.product-name').value.trim();
-                const qtyPerBox = parseInt(row.querySelector('.qty-per-box').value) || 0;
-                const totalQty = parseInt(row.querySelector('.total-qty').value) || 0;
-                const boxes = parseInt(row.querySelector('.box-count').textContent) || 0;
-                if (productName && qtyPerBox > 0 && boxes > 0) {
-                    totalBoxes += boxes;
-                    productData.push({ productName, qtyPerBox, totalQty, boxes, remarks: row.querySelector('.remarks').value.trim() });
+            btns.forEach(btn => {
+                const tab = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+                if (allowed.includes(tab)) {
+                    btn.classList.remove('role-hidden');
+                    if (!firstTab) firstTab = tab;
+                } else {
+                    btn.classList.add('role-hidden');
                 }
             });
 
-            if (productData.length === 0) { showAlert('Please add at least one valid product', 'error'); return; }
+            if (firstTab) switchTab(firstTab);
+            renderRecords();
+        }
 
-            packingQueue.push({ id: Date.now(), orderNumber, customerName, deliveryLocation, packingDate, products: productData, totalBoxes });
-            saveQueueToStorage(); renderQueue();
-            document.getElementById('orderNumber').value = '';
-            document.getElementById('customerName').value = '';
-            resetProductTable();
-            showAlert('Order added to queue!', 'success');
+        function switchTab(name) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(name + '-tab').classList.add('active');
+            
+            // Find and activate the correct button
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                if(b.getAttribute('onclick').includes(name)) b.classList.add('active');
+            });
+
+            if (name === 'records') renderOrderList();
+            if (name === 'withdrawal') renderWithdrawalList();
+            if (name === 'packing-list') populateOrderDropdown();
+        }
+
+        function addProductRow() {
+            const tbody = document.getElementById('productTableBody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td data-label="Name"><input type="text" class="p-name" placeholder="Item"></td>
+                <td data-label="Qty/Box"><input type="number" class="p-qpb" value="10" oninput="updateBoxCalc(this)"></td>
+                <td data-label="Total"><input type="number" class="p-total" value="100" oninput="updateBoxCalc(this)"></td>
+                <td data-label="Boxes" class="p-boxcount">10</td>
+                <td data-label="Action"><button class="btn-danger" onclick="this.parentElement.parentElement.remove()">✕</button></td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        function updateBoxCalc(el) {
+            const tr = el.parentElement.parentElement;
+            const qpb = tr.querySelector('.p-qpb').value || 1;
+            const total = tr.querySelector('.p-total').value || 0;
+            tr.querySelector('.p-boxcount').innerText = Math.ceil(total / qpb);
+        }
+
+        function addToQueue() {
+            const order = {
+                orderNumber: document.getElementById('orderNumber').value,
+                customer: document.getElementById('customerName').value,
+                products: []
+            };
+            document.querySelectorAll('#productTableBody tr').forEach(tr => {
+                order.products.push({
+                    name: tr.querySelector('.p-name').value,
+                    boxes: parseInt(tr.querySelector('.p-boxcount').innerText)
+                });
+            });
+            packingQueue.push(order);
+            localStorage.setItem('packingQueue', JSON.stringify(packingQueue));
+            renderQueue();
         }
 
         function renderQueue() {
             const tbody = document.getElementById('queueTableBody');
-            const badgeTab = document.getElementById('queue-badge-tab');
             tbody.innerHTML = '';
-            
-            document.getElementById('queue-count').textContent = `${packingQueue.length} Orders`;
-            if(badgeTab) {
-                badgeTab.textContent = packingQueue.length;
-                badgeTab.style.display = packingQueue.length > 0 ? 'inline-block' : 'none';
-            }
-
-            document.getElementById('empty-queue').style.display = packingQueue.length === 0 ? 'block' : 'none';
-            document.getElementById('generate-actions').style.display = packingQueue.length === 0 ? 'none' : 'flex';
-
-            packingQueue.forEach((item, index) => {
-                const row = document.createElement('tr');
-                const productSummary = item.products.map(p => `${p.productName} (${p.boxes})`).join(', ');
-                row.innerHTML = `
-                    <td data-label="Order #"><strong>${item.orderNumber}</strong></td>
-                    <td data-label="Customer">${item.customerName}</td>
-                    <td data-label="Products"><div style="font-size: 0.85rem;">${productSummary}</div></td>
-                    <td data-label="Total Boxes" style="text-align: center; font-weight: bold;">${item.totalBoxes}</td>
-                    <td data-label="Actions"><div class="action-btns">
-                        <button class="action-btn btn-warning" onclick="editQueueItem(${index})">✏️ Edit</button>
-                        <button class="action-btn btn-danger" onclick="deleteQueueItem(${index})">✕</button>
-                    </div></td>
-                `;
-                tbody.appendChild(row);
+            packingQueue.forEach((q, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td data-label="Order">${q.orderNumber}</td><td data-label="Customer">${q.customer}</td><td><button class="btn-danger" onclick="packingQueue.splice(${i},1);renderQueue()">✕</button></td>`;
+                tbody.appendChild(tr);
             });
+            document.getElementById('genBtn').style.display = packingQueue.length ? 'block' : 'none';
         }
 
         function generateAllLabels() {
-            if (packingQueue.length === 0) return;
-            packingQueue.forEach(order => {
-                let boxNumber = 1;
-                order.products.forEach(product => {
-                    for (let i = 0; i < product.boxes; i++) {
-                        const qtyInBox = (i === product.boxes - 1) ? product.totalQty - (i * product.qtyPerBox) : product.qtyPerBox;
+            packingQueue.forEach(q => {
+                q.products.forEach(p => {
+                    for(let i=0; i<p.boxes; i++) {
                         boxRecords.push({
-                            id: 'BOX-' + Date.now() + Math.random().toString(36).substr(2, 4).toUpperCase(),
-                            orderNumber: order.orderNumber,
-                            customerName: order.customerName,
-                            deliveryLocation: order.deliveryLocation,
-                            productName: product.productName,
-                            boxNumber: boxNumber++,
-                            totalBoxes: order.totalBoxes,
-                            qtyInBox: qtyInBox,
-                            lotNumber: '',
-                            packingDate: order.packingDate,
-                            remarks: product.remarks,
-                            status: 'Pending Lot',
-                            deleted: false,
-                            workflowStatus: 'Orders Ready for Withdrawal',
-                            itemStatus: 'Pending Stock Review',
-                            stockAdjustedQty: qtyInBox,
-                            qcPassQty: 0, qcFailQty: 0, reworkQty: 0, finalApprovedQty: 0
+                            orderNumber: q.orderNumber,
+                            customer: q.customer,
+                            product: p.name,
+                            boxNum: i+1,
+                            workflowStatus: 'Orders Ready for Withdrawal'
                         });
                     }
                 });
             });
-            packingQueue = []; saveQueueToStorage(); saveRecordsToStorage();
-            renderQueue(); renderRecords(); populateOrderNumberDropdown();
-            showAlert('Labels generated!', 'success');
+            packingQueue = [];
+            localStorage.setItem('packingQueue', "[]");
+            localStorage.setItem('boxRecords', JSON.stringify(boxRecords));
+            renderQueue();
+            showAlert("Labels Generated!", "success");
         }
 
         function renderOrderList() {
             const tbody = document.getElementById('orderListBody');
             tbody.innerHTML = '';
-            let orders = groupRecordsByOrder(boxRecords);
-            const search = document.getElementById('mainSearch').value.toLowerCase();
-
-            orders = orders.filter(o => o.orderNumber.toLowerCase().includes(search) || o.customerName.toLowerCase().includes(search));
-
-            updateStats();
-            document.getElementById('empty-history').style.display = orders.length === 0 ? 'block' : 'none';
-
-            orders.forEach(order => {
-                const progress = Math.round((order.boxesWithLot / order.totalBoxes) * 100);
-                const statusClass = order.isLocked ? 'status-locked' : (progress === 100 ? 'status-packed' : 'status-updated');
-                
+            const unique = [...new Set(boxRecords.map(b => b.orderNumber))];
+            unique.forEach(ord => {
                 const tr = document.createElement('tr');
-                tr.className = 'order-row';
-                tr.onclick = (e) => { if(!e.target.closest('button')) toggleOrderDetails(order.orderNumber, tr); };
-                tr.innerHTML = `
-                    <td style="text-align:center;">▶</td>
-                    <td data-label="Order Number" style="font-weight:700;">${order.orderNumber}</td>
-                    <td data-label="Customer">${order.customerName}</td>
-                    <td data-label="Packing Date">${order.packingDate}</td>
-                    <td data-label="Progress"><div class="progress-bar"><div class="progress-fill" style="width: ${progress}%"></div></div><small>${order.boxesWithLot}/${order.totalBoxes}</small></td>
-                    <td data-label="Status"><span class="status-badge ${statusClass}">${order.isLocked ? 'QC Locked' : (progress === 100 ? 'Completed' : 'In Progress')}</span></td>
-                    <td data-label="Actions"><div class="action-btns">
-                        <button class="action-btn btn-secondary" onclick="generatePackingListPDFForOrder('${order.orderNumber}')">📄 List</button>
-                    </div></td>
-                `;
+                tr.innerHTML = `<td data-label="Order">${ord}</td><td data-label="Status"><span class="status-badge status-updated">In Progress</span></td>`;
                 tbody.appendChild(tr);
-
-                const detailsTr = document.createElement('tr');
-                detailsTr.id = `details-${order.orderNumber}`;
-                detailsTr.className = 'order-details-row';
-                let nestedHtml = `<td colspan="7"><div style="padding: 1rem;"><table class="nested-table"><thead><tr><th>Box ID</th><th>Product</th><th>Qty</th><th>LOT</th><th>Action</th></tr></thead><tbody>`;
-                order.boxes.forEach(box => {
-                    nestedHtml += `<tr>
-                        <td>${box.id.split('-').pop()}</td>
-                        <td>${box.productName}</td>
-                        <td>${box.qtyInBox}</td>
-                        <td>${box.lotNumber || '-'}</td>
-                        <td><button class="btn-sm btn-warning" onclick="openEditModal('${box.id}', 'retro')">✏️ Edit</button></td>
-                    </tr>`;
-                });
-                nestedHtml += `</tbody></table></div></td>`;
-                detailsTr.innerHTML = nestedHtml;
-                tbody.appendChild(detailsTr);
             });
-        }
-
-        function groupRecordsByOrder(records) {
-            const orders = {};
-            records.forEach(r => {
-                if (r.deleted) return;
-                if (!orders[r.orderNumber]) {
-                    orders[r.orderNumber] = { orderNumber: r.orderNumber, customerName: r.customerName, packingDate: r.packingDate, boxes: [], totalBoxes: 0, boxesWithLot: 0, isLocked: (r.workflowStatus === 'Shipped') };
-                }
-                orders[r.orderNumber].boxes.push(r);
-                orders[r.orderNumber].totalBoxes++;
-                if (r.lotNumber) orders[r.orderNumber].boxesWithLot++;
-            });
-            return Object.values(orders).sort((a,b) => new Date(b.packingDate) - new Date(a.packingDate));
-        }
-
-        function toggleOrderDetails(orderId, rowElement) {
-            const detailsRow = document.getElementById(`details-${orderId}`);
-            const isActive = detailsRow.classList.contains('active');
-            document.querySelectorAll('.order-details-row').forEach(r => r.classList.remove('active'));
-            document.querySelectorAll('.order-row').forEach(r => { r.classList.remove('expanded'); r.querySelector('td').textContent = '▶'; });
-            if (!isActive) { detailsRow.classList.add('active'); rowElement.classList.add('expanded'); rowElement.querySelector('td').textContent = '▼'; }
-        }
-
-        function updateStats() {
-            const active = boxRecords.filter(r => !r.deleted);
-            document.getElementById('stat-total-orders').textContent = new Set(active.map(r => r.orderNumber)).size;
         }
 
         function renderWithdrawalList() {
             const tbody = document.getElementById('withdrawalListBody');
             tbody.innerHTML = '';
-            let orders = groupRecordsByOrder(boxRecords).filter(o => o.boxes.every(b => b.workflowStatus === 'Orders Ready for Withdrawal'));
-            
-            updateBadgeCounts();
-            document.getElementById('empty-withdrawal').style.display = orders.length === 0 ? 'block' : 'none';
-
-            orders.forEach(order => {
+            const orders = boxRecords.filter(b => b.workflowStatus === 'Orders Ready for Withdrawal');
+            const unique = [...new Set(orders.map(b => b.orderNumber))];
+            unique.forEach(ord => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="text-align:center;">▶</td>
-                    <td data-label="Order Number">${order.orderNumber}</td>
-                    <td data-label="Customer">${order.customerName}</td>
-                    <td data-label="Location">${order.boxes[0].deliveryLocation}</td>
-                    <td data-label="Date">${order.packingDate}</td>
-                    <td data-label="Items">${order.totalBoxes}</td>
-                    <td data-label="Waiting">-</td>
-                    <td data-label="Status"><span class="status-badge status-updated">Ready</span></td>
-                    <td data-label="Actions"><div class="action-btns">
-                        <button class="action-btn btn-primary" onclick="openStockEditModal('${order.orderNumber}')">📦 Stock Review</button>
-                    </div></td>
-                `;
+                tr.innerHTML = `<td data-label="Order">${ord}</td><td><button class="btn-primary" onclick="openStockEditModal('${ord}')">📦 Stock Review</button></td>`;
                 tbody.appendChild(tr);
             });
         }
 
-        function openStockEditModal(orderNumber) {
-            currentStockEditOrder = orderNumber;
-            const boxes = boxRecords.filter(r => r.orderNumber === orderNumber && !r.deleted);
-            document.getElementById('stockEditOrderInfo').innerHTML = `<strong>Order:</strong> ${orderNumber}`;
-            let html = '';
-            boxes.forEach((box, idx) => {
-                html += `<div style="border:1px solid #ddd; padding:1rem; margin-bottom:1rem; border-radius:8px;">
-                    <div>${box.productName}</div>
-                    <div class="form-grid">
-                        <div class="form-group"><label>LOT Number</label><input type="text" id="stock-lot-${idx}" value="${box.lotNumber}"></div>
-                        <div class="form-group"><label>Qty</label><input type="number" id="stock-qty-${idx}" value="${box.qtyInBox}"></div>
-                    </div>
-                </div>`;
-            });
-            document.getElementById('stockEditItems').innerHTML = html;
+        function openStockEditModal(ord) {
+            document.getElementById('stockEditItems').innerHTML = `<p>Adjusting Order: <b>${ord}</b></p>`;
             document.getElementById('stockEditModal').classList.add('active');
         }
 
         function submitStockAdjustment() {
-            const boxes = boxRecords.filter(r => r.orderNumber === currentStockEditOrder && !r.deleted);
-            boxes.forEach((box, idx) => {
-                box.lotNumber = document.getElementById(`stock-lot-${idx}`).value;
-                box.qtyInBox = parseInt(document.getElementById(`stock-qty-${idx}`).value);
-                box.workflowStatus = 'Waiting for QC Inspection';
-                box.itemStatus = 'QC Pending';
-            });
-            saveRecordsToStorage(); closeStockEditModal(); renderWithdrawalList();
-            showAlert('Sent to QC!', 'success');
-        }
-
-        function updateBadgeCounts() {
-            const qcCount = new Set(boxRecords.filter(r => !r.deleted && r.workflowStatus === 'Waiting for QC Inspection').map(r => r.orderNumber)).size;
-            document.getElementById('qc-badge').textContent = qcCount;
-            document.getElementById('qc-badge').style.display = qcCount > 0 ? 'inline-block' : 'none';
+            showAlert("Stock Updated", "success");
+            document.getElementById('stockEditModal').classList.remove('active');
         }
 
         function showAlert(msg, type) {
             const d = document.createElement('div');
-            d.className = `alert alert-${type} active`; d.textContent = msg;
+            d.className = `alert alert-${type} active`; d.innerText = msg;
             document.getElementById('alert-container').appendChild(d);
             setTimeout(() => d.remove(), 3000);
         }
 
-        function saveQueueToStorage() { localStorage.setItem('packingQueue', JSON.stringify(packingQueue)); }
-        function saveRecordsToStorage() { localStorage.setItem('boxRecords', JSON.stringify(boxRecords)); }
-        function loadRecordsFromStorage() {
-            boxRecords = JSON.parse(localStorage.getItem('boxRecords')) || [];
-            packingQueue = JSON.parse(localStorage.getItem('packingQueue')) || [];
-        }
-
-        function closeEditBoxModal() { document.getElementById('editBoxModal').classList.remove('active'); }
-        function closeStockEditModal() { document.getElementById('stockEditModal').classList.remove('active'); }
-        function closeQCInspectionModal() { document.getElementById('qcInspectionModal').classList.remove('active'); }
-        function closeReworkModal() { document.getElementById('stockReworkModal').classList.remove('active'); }
-        function closeDeleteModal() { document.getElementById('confirmDeleteModal').classList.remove('active'); }
-
-        function populateOrderNumberDropdown() {
+        function populateOrderDropdown() {
             const sel = document.getElementById('packingListOrderNumber');
-            const uniq = [...new Set(boxRecords.filter(r => !r.deleted).map(r => r.orderNumber))];
-            sel.innerHTML = '<option value="">-- Select Order --</option>';
-            uniq.forEach(o => { const opt = document.createElement('option'); opt.value = o; opt.textContent = o; sel.appendChild(opt); });
+            const unique = [...new Set(boxRecords.map(b => b.orderNumber))];
+            sel.innerHTML = unique.map(o => `<option>${o}</option>`).join('');
         }
+
+        document.getElementById('packingDate').valueAsDate = new Date();
+        addProductRow();
+        renderQueue();
     </script>
 </body>
 </html>
